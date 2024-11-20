@@ -1,3 +1,4 @@
 output "subnet_id" {
-  value = yandex_vpc_subnet.vpc_subnet.id
+  description = "ID созданной подсети"
+  value       = yandex_vpc_subnet.develop.id
 }
