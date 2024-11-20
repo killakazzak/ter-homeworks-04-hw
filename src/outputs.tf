@@ -9,3 +9,8 @@ output "userdata" {
 output "subnet_id" {
   value = module.vpc_dev.subnet_id
 }
+
+output "subnet_name" {
+  value = module.vpc_dev.subnet_name
+}
+
