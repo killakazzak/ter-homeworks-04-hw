@@ -73,3 +73,9 @@ data "template_file" "cloudinit" {
   }
 }
 
+module "vpc_dev" {
+  source         = "./vpc"
+  network_name   = "my-network"
+  zone           = "ru-central1-a"
+  v4_cidr_blocks = "10.0.1.0/24"
+}
