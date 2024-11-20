@@ -18,20 +18,21 @@ resource "yandex_vpc_subnet" "develop_b" {
   v4_cidr_blocks = [var.default_cidr[1]]
 }
 
-module "test-vm" {
+# Виртуальная машина для проекта marketing
+module "marketing-vm" {
   source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
-  env_name       = var.env_name_test
+  env_name       = var.env_name_marketing
   network_id     = yandex_vpc_network.develop.id
-  subnet_zones   = var.subnet_zones_test
-  subnet_ids     = [yandex_vpc_subnet.develop_a.id, yandex_vpc_subnet.develop_b.id]
-  instance_name  = var.vm_web_name
-  instance_count = var.vm_web_count
+  subnet_zones   = var.subnet_zones_marketing
+  subnet_ids     = [yandex_vpc_subnet.develop_a.id]
+  instance_name  = var.vm_marketing_name
+  instance_count = var.vm_marketing_count
   image_family   = var.image_family
   public_ip      = true
 
   labels = {
-    owner   = var.owner_label,
-    project = var.project_label
+    owner   = var.owner_label
+    project = "marketing"
   }
 
   metadata = {
@@ -40,27 +41,35 @@ module "test-vm" {
   }
 }
 
-module "example-vm" {
+# Виртуальная машина для проекта analytics
+module "analytics-vm" {
   source         = "git::https://github.com/udjin10/yandex_compute_instance.git?ref=main"
-  env_name       = var.env_name_stage
+  env_name       = var.env_name_analytics
   network_id     = yandex_vpc_network.develop.id
-  subnet_zones   = var.subnet_zones_stage
-  subnet_ids     = [yandex_vpc_subnet.develop_a.id]
-  instance_name  = var.vm_db_name
-  instance_count = var.vm_db_count
+  subnet_zones   = var.subnet_zones_analytics
+  subnet_ids     = [yandex_vpc_subnet.develop_b.id]
+  instance_name  = var.vm_analytics_name
+  instance_count = var.vm_analytics_count
   image_family   = var.image_family
   public_ip      = true
 
+  labels = {
+    owner   = var.owner_label
+    project = "analytics"
+  }
+
   metadata = {
     user-data          = data.template_file.cloudinit.rendered
     serial-port-enable = 1
   }
 }
 
-#Пример передачи cloud-config в ВМ для демонстрации №3
-#data "template_file" "cloudinit" {
-#  template = file("./cloud-init.yml")
-#}
+# Шаблон для cloud-init
 data "template_file" "cloudinit" {
   template = file("${path.module}/cloud-init.yaml")
+
+  vars = {
+    ssh_keys = join("\n", var.ssh_keys) # Преобразуем список в строку с разделением по новой строке
+  }
 }
+
