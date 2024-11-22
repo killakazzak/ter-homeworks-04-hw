@@ -64,6 +64,13 @@ module "analytics-vm" {
   }
 }
 
+module "vpc_dev" {
+  source         = "./vpc"
+  network_name   = "my-network"
+  zone           = "ru-central1-a"
+  v4_cidr_blocks = "192.168.1.0/24"
+}
+
 # Шаблон для cloud-init
 data "template_file" "cloudinit" {
   template = file("${path.module}/cloud-init.yaml")
@@ -72,12 +79,3 @@ data "template_file" "cloudinit" {
     ssh_keys = join("\n", var.ssh_keys) # Преобразуем список в строку с разделением по новой строке
   }
 }
-
-module "vpc_dev" {
-  source         = "./vpc"
-  vpc_name       = "my-vpc"
-  default_zone   = "ru-central1-a"
-  v4_cidr_blocks = ["10.0.1.0/24"]
-}
-
-
