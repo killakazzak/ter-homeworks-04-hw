@@ -79,3 +79,8 @@ data "template_file" "cloudinit" {
     ssh_keys = join("\n", var.ssh_keys) # Преобразуем список в строку с разделением по новой строке
   }
 }
+
+
+resource "random_password" "any_uniq_name" {
+  length = 20
+}
