@@ -32,12 +32,6 @@ variable "vpc_name" {
   description = "VPC network and subnet name"
 }
 
-### Common vars
-variable "vms_ssh_root_key" {
-  type        = string
-  default     = "your_ssh_ed25519_key"
-  description = "SSH private key for root access"
-}
 
 ### Example VM Web vars
 variable "vm_marketing_name" {
@@ -101,11 +95,6 @@ variable "owner_label" {
   description = "Owner label for VMs"
 }
 
-variable "project_label" {
-  type        = string
-  default     = "accounting"
-  description = "Project label for VMs"
-}
 
 variable "ssh_keys" {
   description = "SSH public keys for the instances"
